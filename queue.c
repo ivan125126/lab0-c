@@ -31,14 +31,9 @@ void q_free(struct list_head *head)
 {
     if (!head)
         return;
-    struct list_head *cur = head->next, *next;
-    while (cur != head) {
-        next = cur->next;
-        element_t *elem = container_of(cur, element_t, list);
-        free(elem->value);
-        free(elem);
-        cur = next;
-    }
+    element_t *elem, *safe = NULL;
+    list_for_each_entry_safe (elem, safe, head, list)
+        q_release_element(elem);
     free(head);
 }
 
