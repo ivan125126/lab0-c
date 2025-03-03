@@ -11,26 +11,17 @@
  */
 
 /* =============================================================================
- * Helper macro: container_of
- * =============================================================================
- */
-#ifndef container_of
-#define container_of(ptr, type, member) \
-    ((type *) ((char *) (ptr) - offsetof(type, member)))
-#endif
-
-/* =============================================================================
  * q_new - Create an empty queue (sentinel node)
  * =============================================================================
  */
 struct list_head *q_new()
 {
     struct list_head *head = malloc(sizeof(struct list_head));
-    if (!head)
-        return NULL;
-    INIT_LIST_HEAD(head);
+    if (head)
+        INIT_LIST_HEAD(head);
     return head;
 }
+
 
 /* =============================================================================
  * q_free - Free all storage used by queue, including the sentinel.
@@ -44,11 +35,11 @@ void q_free(struct list_head *head)
     while (cur != head) {
         next = cur->next;
         element_t *elem = container_of(cur, element_t, list);
-        test_free(elem->value);
-        test_free(elem);
+        free(elem->value);
+        free(elem);
         cur = next;
     }
-    test_free(head);
+    free(head);
 }
 
 /* =============================================================================
@@ -164,8 +155,8 @@ bool q_delete_mid(struct list_head *head)
     }
     list_del(slow);
     element_t *mid = container_of(slow, element_t, list);
-    test_free(mid->value);
-    test_free(mid);
+    free(mid->value);
+    free(mid);
     return true;
 }
 
